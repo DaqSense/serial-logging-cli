@@ -33,7 +33,7 @@ jobs:
         run: |
           archive="serial-logging-cli-${{ github.ref_name }}-${{ matrix.target }}.tar.gz"
           tar -C "target/${{ matrix.target }}/release" -czf "$archive" serial-logging-cli
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: serial-logging-cli-${{ matrix.target }}
           path: serial-logging-cli-*.tar.gz
@@ -53,7 +53,7 @@ jobs:
         run: |
           $archive = "serial-logging-cli-${{ github.ref_name }}-x86_64-pc-windows-msvc.zip"
           Compress-Archive -Path "target/x86_64-pc-windows-msvc/release/serial-logging-cli.exe" -DestinationPath $archive
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: serial-logging-cli-x86_64-pc-windows-msvc
           path: serial-logging-cli-*.zip
