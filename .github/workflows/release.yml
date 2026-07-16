@@ -24,7 +24,7 @@ jobs:
             target: x86_64-apple-darwin
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
@@ -33,7 +33,7 @@ jobs:
         run: |
           archive="serial-logging-cli-${{ github.ref_name }}-${{ matrix.target }}.tar.gz"
           tar -C "target/${{ matrix.target }}/release" -czf "$archive" serial-logging-cli
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: serial-logging-cli-${{ matrix.target }}
           path: serial-logging-cli-*.tar.gz
@@ -43,7 +43,7 @@ jobs:
     name: Build x86_64-pc-windows-msvc
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: x86_64-pc-windows-msvc
@@ -53,7 +53,7 @@ jobs:
         run: |
           $archive = "serial-logging-cli-${{ github.ref_name }}-x86_64-pc-windows-msvc.zip"
           Compress-Archive -Path "target/x86_64-pc-windows-msvc/release/serial-logging-cli.exe" -DestinationPath $archive
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: serial-logging-cli-x86_64-pc-windows-msvc
           path: serial-logging-cli-*.zip
@@ -64,7 +64,8 @@ jobs:
     needs: [build-unix, build-windows]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
