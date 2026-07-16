@@ -6,7 +6,37 @@ Use it as a serial port logger for Arduino, ESP32, USB serial adapters, sensors,
 
 ## Install
 
-Download the archive for Windows, macOS, or Linux from the [latest release](../../releases/latest), extract it, and put the executable somewhere on your `PATH`.
+### macOS and Linux
+
+Download and inspect the installer, then run it:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/DaqSense/serial-logging-cli/main/scripts/install.sh
+sh install.sh
+```
+
+It detects your operating system and CPU, verifies the release checksum, and installs the executable to `~/.local/bin`. To choose a version or directory:
+
+```bash
+sh install.sh --version 0.1.1 --install-dir /your/preferred/bin
+```
+
+### Windows
+
+In PowerShell, download and inspect the installer, then run it:
+
+```powershell
+Invoke-WebRequest https://raw.githubusercontent.com/DaqSense/serial-logging-cli/main/scripts/install.ps1 -OutFile install.ps1
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+It verifies the release checksum, installs `serial-logging-cli.exe` under your local application data directory, and adds that directory to your user `PATH`. To choose a version or directory:
+
+```powershell
+.\install.ps1 -Version 0.1.1 -InstallDir C:\Tools\serial-logging-cli
+```
+
+You can also download the archive for Windows, macOS, or Linux from the [latest release](../../releases/latest), extract it, and put the executable somewhere on your `PATH` manually.
 
 To build from source, install a current Rust toolchain and run:
 
