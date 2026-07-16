@@ -6,7 +6,7 @@ rust-version = "1.85"
 description = "A tiny cross-platform CLI for capturing raw serial output to text or line-based CSV logs"
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/daqsense06/serial-logging-cli"
+repository = "https://github.com/DaqSense/serial-logging-cli"
 keywords = ["serial", "logger", "arduino", "csv", "cli"]
 categories = ["command-line-utilities", "hardware-support"]
 
