@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-unix:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: macos-latest
+            target: x86_64-apple-darwin
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: cargo build --release --locked --target ${{ matrix.target }}
+      - name: Package binary
+        run: |
+          archive="serial-logging-cli-${{ github.ref_name }}-${{ matrix.target }}.tar.gz"
+          tar -C "target/${{ matrix.target }}/release" -czf "$archive" serial-logging-cli
+      - uses: actions/upload-artifact@v4
+        with:
+          name: serial-logging-cli-${{ matrix.target }}
+          path: serial-logging-cli-*.tar.gz
+          if-no-files-found: error
+
+  build-windows:
+    name: Build x86_64-pc-windows-msvc
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+      - run: cargo build --release --locked --target x86_64-pc-windows-msvc
+      - name: Package binary
+        shell: pwsh
+        run: |
+          $archive = "serial-logging-cli-${{ github.ref_name }}-x86_64-pc-windows-msvc.zip"
+          Compress-Archive -Path "target/x86_64-pc-windows-msvc/release/serial-logging-cli.exe" -DestinationPath $archive
+      - uses: actions/upload-artifact@v4
+        with:
+          name: serial-logging-cli-x86_64-pc-windows-msvc
+          path: serial-logging-cli-*.zip
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub release
+    needs: [build-unix, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" dist/* --generate-notes --verify-tag
